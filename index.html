@@ -4,67 +4,142 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="author" content="karfagensky">
-    <title>Loading | karfagensky</title>
+    <title>Telegram Redirect | karfagensky</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
+        :root {
+            --tg-blue: #2aabee;
+            --tg-bg: var(--tg-theme-bg-color, #f5f5f5);
+            --tg-text: var(--tg-theme-text-color, #222);
+        }
+
         body {
-            font-family: sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
             margin: 0;
-            background-color: var(--tg-theme-bg-color, #fff);
-            color: var(--tg-theme-text-color, #000);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--tg-bg);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            color: var(--tg-text);
         }
-        #loading {
-            font-size: 20px;
-        }
-        #message {
-            display: none;
-            font-size: 18px;
+
+        .card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 28px 24px;
+            width: 90%;
+            max-width: 360px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
             text-align: center;
-            padding: 20px;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .logo {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: var(--tg-blue);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 28px;
+            margin: 0 auto 16px;
+        }
+
+        .title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .subtitle {
+            font-size: 14px;
+            color: #777;
+            margin-bottom: 18px;
+        }
+
+        .spinner {
+            width: 32px;
+            height: 32px;
+            border: 3px solid #e0e0e0;
+            border-top-color: var(--tg-blue);
+            border-radius: 50%;
+            margin: 0 auto;
+            animation: spin 0.9s linear infinite;
+        }
+
+        .message {
+            display: none;
+            font-size: 14px;
             color: #888;
+        }
+
+        .author {
+            margin-top: 14px;
+            font-size: 12px;
+            color: #aaa;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
 <body>
-    <div id="loading">Загрузка…</div>
-    <div id="message">
-        В приложении проводятся технические работы.<br><br>
-        @karfagensky
+
+<div class="card">
+    <div class="logo">➜</div>
+
+    <div id="loading">
+        <div class="title">Перенаправление</div>
+        <div class="subtitle">Открываем @lolzoddbot</div>
+        <div class="spinner"></div>
     </div>
 
-    <script>
-        Telegram.WebApp.ready();
+    <div id="message" class="message">
+        В приложении ведутся технические работы.<br><br>
+        Попробуйте позже.
+    </div>
 
-        const VALID_KEY = 'bull2';
-        const BOT_LINK = 'https://t.me/lolzoddbot';
+    <div class="author">@karfagensky</div>
+</div>
 
-        const startParam = Telegram.WebApp.initDataUnsafe.start_param || '';
+<script>
+    Telegram.WebApp.ready();
 
-        const loadingDiv = document.getElementById('loading');
-        const messageDiv = document.getElementById('message');
+    const VALID_KEY = 'cheetos';
+    const BOT_LINK = 'https://t.me/lolzoddbot';
 
-        if (startParam === VALID_KEY) {
+    const startParam = Telegram.WebApp.initDataUnsafe.start_param || '';
+
+    const loading = document.getElementById('loading');
+    const message = document.getElementById('message');
+
+    if (startParam === VALID_KEY) {
+        setTimeout(() => {
+            if (Telegram.WebApp.openTelegramLink) {
+                Telegram.WebApp.openTelegramLink(BOT_LINK);
+            } else {
+                window.location.href = BOT_LINK;
+            }
+
             setTimeout(() => {
-                if (Telegram.WebApp.openTelegramLink) {
-                    Telegram.WebApp.openTelegramLink(BOT_LINK);
-                } else {
-                    window.location.href = BOT_LINK;
-                }
+                Telegram.WebApp.close();
+            }, 600);
+        }, 1000);
+    } else {
+        loading.style.display = 'none';
+        message.style.display = 'block';
+        Telegram.WebApp.expand();
+    }
+</script>
 
-                setTimeout(() => {
-                    Telegram.WebApp.close();
-                }, 500);
-            }, 1000);
-        } else {
-            loadingDiv.style.display = 'none';
-            messageDiv.style.display = 'block';
-            Telegram.WebApp.expand();
-        }
-    </script>
 </body>
 </html>
-
