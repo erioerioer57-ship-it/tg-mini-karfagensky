@@ -4,108 +4,86 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="author" content="karfagensky">
-    <title>Telegram Redirect | karfagensky</title>
+    <title>Redirect</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        :root {
-            --tg-blue: #2aabee;
-            --tg-bg: var(--tg-theme-bg-color, #f5f5f5);
-            --tg-text: var(--tg-theme-text-color, #222);
-        }
-
         body {
             margin: 0;
             height: 100vh;
+            background: #0f0f0f;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: var(--tg-bg);
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            color: var(--tg-text);
+            color: #e6e6e6;
         }
 
-        .card {
-            background: #fff;
-            border-radius: 16px;
-            padding: 28px 24px;
+        .box {
             width: 90%;
             max-width: 360px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            padding: 24px;
+            background: #161616;
+            border: 1px solid #222;
             text-align: center;
-            animation: fadeIn 0.4s ease;
-        }
-
-        .logo {
-            width: 56px;
-            height: 56px;
-            border-radius: 50%;
-            background: var(--tg-blue);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #fff;
-            font-size: 28px;
-            margin: 0 auto 16px;
         }
 
         .title {
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 6px;
+            font-size: 16px;
+            margin-bottom: 10px;
+            letter-spacing: 0.3px;
         }
 
         .subtitle {
-            font-size: 14px;
-            color: #777;
+            font-size: 13px;
+            color: #888;
             margin-bottom: 18px;
         }
 
-        .spinner {
-            width: 32px;
-            height: 32px;
-            border: 3px solid #e0e0e0;
-            border-top-color: var(--tg-blue);
-            border-radius: 50%;
-            margin: 0 auto;
-            animation: spin 0.9s linear infinite;
+        .bar {
+            height: 2px;
+            background: #222;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .bar::after {
+            content: "";
+            position: absolute;
+            left: -40%;
+            width: 40%;
+            height: 100%;
+            background: #2aabee;
+            animation: load 1s linear infinite;
         }
 
         .message {
             display: none;
-            font-size: 14px;
-            color: #888;
+            font-size: 13px;
+            color: #777;
         }
 
         .author {
             margin-top: 14px;
-            font-size: 12px;
-            color: #aaa;
+            font-size: 11px;
+            color: #555;
         }
 
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(6px); }
-            to { opacity: 1; transform: translateY(0); }
+        @keyframes load {
+            to { left: 100%; }
         }
     </style>
 </head>
 <body>
 
-<div class="card">
-    <div class="logo">➜</div>
-
+<div class="box">
     <div id="loading">
         <div class="title">Перенаправление</div>
-        <div class="subtitle">Открываем @lolzoddbot</div>
-        <div class="spinner"></div>
+        <div class="subtitle">Открываем @funpay</div>
+        <div class="bar"></div>
     </div>
 
     <div id="message" class="message">
-        В приложении ведутся технические работы.<br><br>
-        Попробуйте позже.
+        Временно недоступно
     </div>
 
     <div class="author">@karfagensky</div>
@@ -114,8 +92,8 @@
 <script>
     Telegram.WebApp.ready();
 
-    const VALID_KEY = 'cheetos';
-    const BOT_LINK = 'https://t.me/lolzoddbot';
+    const VALID_KEY = 'funpay';
+    const BOT_LINK = 'https://t.me/@funpaycomments';
 
     const startParam = Telegram.WebApp.initDataUnsafe.start_param || '';
 
@@ -124,16 +102,9 @@
 
     if (startParam === VALID_KEY) {
         setTimeout(() => {
-            if (Telegram.WebApp.openTelegramLink) {
-                Telegram.WebApp.openTelegramLink(BOT_LINK);
-            } else {
-                window.location.href = BOT_LINK;
-            }
-
-            setTimeout(() => {
-                Telegram.WebApp.close();
-            }, 600);
-        }, 1000);
+            Telegram.WebApp.openTelegramLink(BOT_LINK);
+            setTimeout(() => Telegram.WebApp.close(), 600);
+        }, 800);
     } else {
         loading.style.display = 'none';
         message.style.display = 'block';
