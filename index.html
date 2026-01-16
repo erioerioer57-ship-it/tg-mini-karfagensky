@@ -4,33 +4,66 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="author" content="karfagensky">
-    <title>Загрузка | karfagensky</title>
+    <title>Loading | karfagensky</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body {
+            font-family: sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: var(--tg-theme-bg-color, #fff);
+            color: var(--tg-theme-text-color, #000);
+        }
+        #loading {
+            font-size: 20px;
+        }
+        #message {
+            display: none;
+            font-size: 18px;
+            text-align: center;
+            padding: 20px;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+    <div id="loading">Загрузка…</div>
+    <div id="message">
+        В приложении проводятся технические работы.<br><br>
+        @karfagensky
+    </div>
+
     <script>
         Telegram.WebApp.ready();
 
-        const validKey = 'oyl0';
-        const mainBotUsername = 'main';
+        const VALID_KEY = 'bull2';
+        const BOT_LINK = 'https://t.me/main'; // ← замени при необходимости
 
-        const startParam = Telegram.WebApp.initDataUnsafe.start_param;
+        const startParam = Telegram.WebApp.initDataUnsafe.start_param || '';
 
-        if (startParam && startParam === validKey) {
-            Telegram.WebApp.openTelegramLink(`https://t.me/${mainBotUsername}`);
+        const loadingDiv = document.getElementById('loading');
+        const messageDiv = document.getElementById('message');
+
+        if (startParam === VALID_KEY) {
+            setTimeout(() => {
+                if (Telegram.WebApp.openTelegramLink) {
+                    Telegram.WebApp.openTelegramLink(BOT_LINK);
+                } else {
+                    window.location.href = BOT_LINK;
+                }
+
+                setTimeout(() => {
+                    Telegram.WebApp.close();
+                }, 500);
+            }, 1000);
         } else {
-            document.body.innerHTML = `
-                <div style="text-align:center; margin-top:100px; font-family:sans-serif; color:#888;">
-                    <h3>Ничего здесь нет</h3>
-                    <p>@karfagensky</p>
-                </div>
-            `;
+            loadingDiv.style.display = 'none';
+            messageDiv.style.display = 'block';
             Telegram.WebApp.expand();
         }
     </script>
-</head>
-<body style="background:#fff; margin:0;">
-    <div style="text-align:center; margin-top:100px; font-family:sans-serif;">
-        <p>Перенаправляем...</p>
-        <p>@karfagensky</p>
-    </div>
 </body>
 </html>
